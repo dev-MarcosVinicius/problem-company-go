@@ -1,6 +1,7 @@
 package routes
 
 import (
+    "os"
     "io/ioutil"
     "encoding/json"
     "fmt"
@@ -32,7 +33,7 @@ func updateCustomer(w http.ResponseWriter, r *http.Request, p httprouter.Params)
     customer.First_Name = updatedCustomer.First_Name
     customer.Last_Name = updatedCustomer.Last_Name
     customer.Email = updatedCustomer.Email
-    customer.Password = password.HashPassword(updatedCustomer.Email)
+    customer.Password, _ = password.HashPassword(updatedCustomer.Email)
 
     postgres.UpdateCustomer(customer)
 
@@ -82,15 +83,16 @@ func getCustomers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func StartRoutes() {
+    port := func() string { if os.Getenv("PORT") != "" { return os.Getenv("PORT") } else { return "1122" } }()
 	router := httprouter.New()
     router.GET("/customers", getCustomers)
     router.GET("/customers/:id", getCustomerById)
     router.POST("/customers", createCustomer)
     router.PUT("/customers/:id", updateCustomer)
 
-    fmt.Println("Running API on port: 1122")
+    fmt.Println("Running API on port: " + port)
 
-    err := http.ListenAndServe("localhost:1122", router)
+    err := http.ListenAndServe("localhost:" + port, router)
 	if err != nil {
         panic(err)
 	}
