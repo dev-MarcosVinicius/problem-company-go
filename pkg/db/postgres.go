@@ -59,3 +59,10 @@ func GetCustomerById(id string) models.Customer {
 
 	return customer
 }
+
+// Function to create a customer
+func CreateCustomer(customer models.Customer) {
+	if result := db.Create(&customer); result.Error != nil {
+        fmt.Println(result.Error)
+    }
+}

@@ -1,13 +1,37 @@
 package routes
 
 import (
+    "io/ioutil"
     "encoding/json"
     "fmt"
     "net/http"
 	"github.com/julienschmidt/httprouter"
 
 	"problem-company/pkg/db"
+	"problem-company/pkg/models"
+	"problem-company/pkg/lib"
 )
+
+// Function to create a customer
+func createCustomer(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+    defer r.Body.Close()
+    body, err := ioutil.ReadAll(r.Body)
+
+    if err != nil {
+        fmt.Println("Error on read body.")
+    }
+    
+    var customer models.Customer
+    json.Unmarshal(body, &customer)
+
+    customer.Password, _ = password.HashPassword(customer.Password)
+    
+    postgres.CreateCustomer(customer)
+
+    w.Header().Add("Content-Type", "application/json")
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode("Created")
+}
 
 // Function to return a customer by id
 func getCustomerById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -32,6 +56,7 @@ func StartRoutes() {
 	router := httprouter.New()
     router.GET("/customers", getCustomers)
     router.GET("/customers/:id", getCustomerById)
+    router.POST("/customers", createCustomer)
 
     fmt.Println("Running API on port: 1122")
 
