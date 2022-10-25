@@ -47,3 +47,11 @@ docker run -e PORT=<port> problem-company-api
 #### /customers/:id
 * `GET` : Get a customer
 * `PUT` : Update a customer
+
+### Customer Model
+```
+    First_Name: string;
+	Last_Name: string;
+	Email: string;
+	Password: string;
+```
