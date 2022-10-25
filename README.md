@@ -50,8 +50,8 @@ docker run -e PORT=<port> problem-company-api
 
 ### Customer Model
 ```
-    First_Name: string;
-	Last_Name: string;
-	Email: string;
-	Password: string;
+First_Name: string;
+Last_Name: string;
+Email: string;
+Password: string;
 ```
