@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"fmt"
-    "os"
 
 	"gorm.io/gorm"
 	"gorm.io/driver/postgres"
@@ -18,18 +17,9 @@ type Customer struct {
 }
 
 func Connect() *gorm.DB {
-	port := os.Getenv("PORT")
-	dsn := func() string {	
-		if port != "" {
-			return "user=postgres password=postgres dbname=postgres host=::1 port=" + os.Getenv("PORT") + "sslmode=disable"
-		} else {
-			return "user=postgres password=postgres dbname=postgres host=::1 port=5432 sslmode=disable"
-		}
-	}
-	
 	// Open the connection with Database
 	db, err := gorm.Open(postgres.New(postgres.Config{
-		DSN: dsn(),
+		DSN: "user=postgres password=postgres dbname=postgres host=::1 port=5432 sslmode=disable",
 		PreferSimpleProtocol: true,
 	  }), &gorm.Config{})
 
