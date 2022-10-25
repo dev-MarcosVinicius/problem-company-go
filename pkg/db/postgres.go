@@ -5,6 +5,8 @@ import (
 
 	"gorm.io/gorm"
 	"gorm.io/driver/postgres"
+
+	"problem-company/pkg/models"
 )
 
 // Model Struct of Customer to Database
@@ -16,9 +18,12 @@ type Customer struct {
 	Password string
 }
 
-func Connect() *gorm.DB {
+// Constant to save database connection
+var db *gorm.DB
+
+func Connect() {
 	// Open the connection with Database
-	db, err := gorm.Open(postgres.New(postgres.Config{
+	connection, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: "user=postgres password=postgres dbname=postgres host=::1 port=5432 sslmode=disable",
 		PreferSimpleProtocol: true,
 	  }), &gorm.Config{})
@@ -30,7 +35,17 @@ func Connect() *gorm.DB {
 	fmt.Println("Connected on Database!")
 
 	// Migrate the schema of Customer
-	db.AutoMigrate(&Customer{})
+	connection.AutoMigrate(&Customer{})
 
-    return db
+	db = connection
+}
+
+// Function to returns an array of up to 50 customers
+func GetCustomers() []models.Customer {
+	var customers []models.Customer
+	if result := db.Limit(50).Find(&customers); result.Error != nil {
+        fmt.Println(result.Error)
+    }
+
+	return customers
 }
