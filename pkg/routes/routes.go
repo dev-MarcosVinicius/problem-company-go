@@ -12,6 +12,35 @@ import (
 	"problem-company/pkg/lib"
 )
 
+// Function to update a customer by id
+func updateCustomer(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+    id := p.ByName("id")
+    defer r.Body.Close()
+    body, err := ioutil.ReadAll(r.Body)
+
+    if err != nil {
+        fmt.Println("Error on read body.")
+    }
+    
+    var updatedCustomer models.Customer
+    json.Unmarshal(body, &updatedCustomer)
+
+    var customer models.Customer
+
+    customer = postgres.GetCustomerById(id)
+
+    customer.First_Name = updatedCustomer.First_Name
+    customer.Last_Name = updatedCustomer.Last_Name
+    customer.Email = updatedCustomer.Email
+    customer.Password = password.HashPassword(updatedCustomer.Email)
+
+    postgres.UpdateCustomer(customer)
+
+    w.Header().Add("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode("Updated")
+}
+
 // Function to create a customer
 func createCustomer(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
     defer r.Body.Close()
@@ -57,6 +86,7 @@ func StartRoutes() {
     router.GET("/customers", getCustomers)
     router.GET("/customers/:id", getCustomerById)
     router.POST("/customers", createCustomer)
+    router.PUT("/customers/:id", updateCustomer)
 
     fmt.Println("Running API on port: 1122")
 

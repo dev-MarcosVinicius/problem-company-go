@@ -66,3 +66,10 @@ func CreateCustomer(customer models.Customer) {
         fmt.Println(result.Error)
     }
 }
+
+// Function to update a customer
+func UpdateCustomer(customer models.Customer) {
+	if result := db.Save(&customer); result.Error != nil {
+        fmt.Println(result.Error)
+    }
+}
