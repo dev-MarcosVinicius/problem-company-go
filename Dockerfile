@@ -1,16 +1,14 @@
-FROM golang:1.17
+FROM golang:1.17-alpine
 
 WORKDIR /app
 
-COPY ./go.mod ./go.mod
-COPY ./go.sum ./go.sum
+COPY go.mod ./
+COPY go.sum ./
 
 RUN go mod download
 
 COPY . .
 
-RUN go get .
+RUN go build -o /problem-company
 
-CMD [ "go", "run", "." ]
-
-EXPOSE 3000
+CMD [ "/problem-company" ]
