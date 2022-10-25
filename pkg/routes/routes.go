@@ -9,6 +9,16 @@ import (
 	"problem-company/pkg/db"
 )
 
+// Function to return a customer by id
+func getCustomerById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+    id := p.ByName("id")
+    customer := postgres.GetCustomerById(id)
+
+    w.Header().Add("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(customer)
+}
+
 // Function to returns an array of up to 50 customers
 func getCustomers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
     customers := postgres.GetCustomers()
@@ -21,6 +31,7 @@ func getCustomers(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 func StartRoutes() {
 	router := httprouter.New()
     router.GET("/customers", getCustomers)
+    router.GET("/customers/:id", getCustomerById)
 
     fmt.Println("Running API on port: 1122")
 

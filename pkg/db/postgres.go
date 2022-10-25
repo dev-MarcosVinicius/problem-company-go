@@ -49,3 +49,13 @@ func GetCustomers() []models.Customer {
 
 	return customers
 }
+
+// Function to return a customer by id
+func GetCustomerById(id string) models.Customer {
+	var customer models.Customer
+	if result := db.First(&customer, id); result.Error != nil {
+        fmt.Println(result.Error)
+    }
+
+	return customer
+}
