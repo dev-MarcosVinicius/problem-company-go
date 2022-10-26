@@ -7,10 +7,3 @@ type Customer struct {
 	Email string `json:"email"`
 	Password string `json:"password"`
 }
-
-type Body struct {
-    First_Name string
-	Last_Name string 
-	Email string
-	Password string
-}
